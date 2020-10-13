@@ -61,8 +61,8 @@ nnoremap <silent> <leader>F :call AckSearch(0,"")<cr>
 例子:
 
 ```
-let g:ack_program_lists = {
+let g:ack_program_lists = [
     \ '~/Code/GitProgramA',
     \ '/root/src/GitProgramB',
-    \ }
+    \ ]
 ```
