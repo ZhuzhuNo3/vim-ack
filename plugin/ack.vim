@@ -48,6 +48,7 @@ function! AckSearch(mod, args)
     else
         let pargs = empty(a:args) ? expand("<cword>") : a:args
     endif
+    echo ""
     if pargs == ""
         echo "No regular expression found."
         return
