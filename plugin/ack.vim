@@ -62,7 +62,7 @@ function! AckSearch(mod, args)
     if g:ack_openqf_when_search
         silent execute ":copen"
     endif
-    silent execute ":AsyncRun! -strip -post=:copen|call\\ setqflist([],'a',{'title':'" . showargs . "'}) ack -s -H --nopager --nocolor --nogroup --column " . pargs . " '.' " . s:MyPath
+    silent execute ":AsyncRun! -strip -post=:copen|call\\ setqflist([],'a',{'title':\"" . showargs . "\"}) ack -s -H --nopager --nocolor --nogroup --column " . pargs . " '.' " . s:MyPath
     " 在qf打开之后再修改title
     if g:ack_openqf_when_search
         call setqflist([],'a',{'title':'Searching...'})
