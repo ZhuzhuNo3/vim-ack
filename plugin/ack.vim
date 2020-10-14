@@ -1,5 +1,5 @@
-" vnoremap <silent> <leader>F :call AckSearch(1,"")<cr>
-" nnoremap <silent> <leader>F :call AckSearch(0,"")<cr>
+" vnoremap <silent> <leader>F :call ack#search(1,"")<cr>
+" nnoremap <silent> <leader>F :call ack#search(0,"")<cr>
 " 自定义quickfix中高亮行的高亮方式 -> 保留文本颜色, 仅修改背景色
 " hi QuickFixLine ctermfg=NONE ctermbg=12 guifg=NONE guibg=#de935f
 
@@ -34,7 +34,7 @@ if exists('g:ack_program_lists')
     endfor
 endif
 
-function! AckSearch(mod, args)
+function! ack#search(mod, args)
     if a:mod
         let [line_start, column_start] = getpos("'<")[1:2]
         let [line_end, column_end] = getpos("'>")[1:2]
@@ -70,4 +70,4 @@ function! AckSearch(mod, args)
     endif
 endfunction
 
-command! -nargs=* -complete=file Ack :call AckSearch(0, <q-args>)
+command! -nargs=* -complete=file Ack :call ack#search(0, <q-args>)

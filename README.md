@@ -25,9 +25,9 @@ call plug#end()
 
 ```
 " 在visual模式下对选中内容进行搜索
-vnoremap <silent> <leader>F :call AckSearch(1,"")<cr>
+vnoremap <silent> <leader>F :call ack#search(1,"")<cr>
 " 在normal模式下对光标指向的单词进行搜索
-nnoremap <silent> <leader>F :call AckSearch(0,"")<cr>
+nnoremap <silent> <leader>F :call ack#search(0,"")<cr>
 ```
 
 # 选项
