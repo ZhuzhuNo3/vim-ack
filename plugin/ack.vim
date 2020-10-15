@@ -16,12 +16,20 @@ if !exists('g:ack_openqf_when_search')
     let g:ack_openqf_when_search = 1
 endif
 
+if !exists('g:ack_focus_when_search')
+    let g:ack_focus_when_search = 0
+endif
+
+if !exists('g:ack_focus_after_search')
+    let g:ack_focus_after_search = 0
+endif
+
 if g:ack_autoclose_qf == 1
     autocmd FileType qf nnoremap <silent> <buffer> <CR> <CR>:cclose<CR>
 endif
 
 " ack会根据.git里的内容快速搜索结果, 可以将包含.git的所有项目目录加入到搜索路径中
-let s:MyPath = ""
+let s:MyPath = expand('%:p') . " '.' "
 if exists('g:ack_program_lists')
     for s:program_path in g:ack_program_lists
         if fnamemodify('', ':p') =~ fnamemodify(s:program_path, ':p') . '.*'
@@ -61,13 +69,20 @@ function! ack#search(mod, args)
         let pargs = "-Q " . pargs
     endif
     if g:ack_openqf_when_search
-        silent execute ":copen"
+        silent! execute ":copen"
+        if g:ack_focus_when_search == 0
+            silent! execute "wincmd p"
+        endif
     endif
-    silent execute ":AsyncRun! -strip -post=:copen|call\\ setqflist([],'a',{'title':\"" . showargs . "\"}) ack -s -H --nopager --nocolor --nogroup --column " . pargs . " '.' " . s:MyPath
+    let s:post = "call\\ setqflist([],'a',{'title':\"" . showargs . "\"})"
+    if g:ack_focus_after_search == 1
+        let s:post = 'copen|' . s:post
+    endif
+    silent execute ":AsyncRun! -strip -post=".s:post." ack -s -H --nopager --nocolor --nogroup --column ".pargs." ".s:MyPath." | awk '!x[$0]++'"
     " 在qf打开之后再修改title
     if g:ack_openqf_when_search
         call setqflist([],'a',{'title':'Searching...'})
     endif
 endfunction
 
-command! -nargs=* -complete=file Ack :call ack#search(0, <q-args>)
+command! -nargs=* Ack :call ack#search(0, <q-args>)

@@ -52,6 +52,20 @@ nnoremap <silent> <leader>F :call ack#search(0,"")<cr>
 
 为1时, 搜索即打开quickfix窗口. 为0时, 搜索结束后打开quickfix窗口.
 
+### `g:ack_focus_when_search`
+
+默认: `let g:ack_focus_when_search = 0`
+
+当 `g:ack_focus_when_search == 1` 时该选项生效.
+
+为0时, 搜索时光标停留在当前buffer. 为1时, 搜索时光标聚焦至quickfix窗口.
+
+### `g:ack_focus_after_search`
+
+默认: `let g:ack_focus_after_search = 0`
+
+为0时, 搜索结束后光标仍停留在当前buffer. 为1时, 搜索结束后光标聚焦至quickfix窗口.
+
 ### `g:ack_program_lists`
 
 默认不进行设置
