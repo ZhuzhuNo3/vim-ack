@@ -69,15 +69,16 @@ function! ack#search(mod, args)
         let pargs = "-Q " . pargs
     endif
     if g:ack_openqf_when_search
-        silent! execute ":copen"
+        silent! execute ":botright copen"
         if g:ack_focus_when_search == 0
             silent! execute "wincmd p"
         endif
     endif
     let s:post = "call\\ setqflist([],'a',{'title':\"" . showargs . "\"})"
-    if g:ack_focus_after_search == 1
-        let s:post = 'copen|' . s:post
+    if g:ack_focus_after_search == 0
+        let s:post = 'wincmd\ p|'.s:post
     endif
+    let s:post = 'botright\ copen|'.s:post
     silent execute ":AsyncRun! -strip -post=".s:post." ack -s -H --nopager --nocolor --nogroup --column ".pargs." ".s:MyPath." | awk '!x[$0]++'"
     " 在qf打开之后再修改title
     if g:ack_openqf_when_search
