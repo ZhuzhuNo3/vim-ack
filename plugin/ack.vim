@@ -29,8 +29,8 @@ if g:ack_autoclose_qf == 1
 endif
 
 " ack会根据.git里的内容快速搜索结果, 可以将包含.git的所有项目目录加入到搜索路径中
-let s:MyPath = expand('%:p') . " '.' "
 if exists('g:ack_program_lists')
+    let s:MyPath = "'".expand('%:p')."'"
     for s:program_path in g:ack_program_lists
         if fnamemodify('', ':p') =~ fnamemodify(s:program_path, ':p') . '.*'
             let s:gitLists = split(globpath(s:program_path, '**/.git'), '\n')
@@ -40,6 +40,8 @@ if exists('g:ack_program_lists')
             break
         endif
     endfor
+else
+    let s:MyPath = "'".expand('%')."' '.'"
 endif
 
 function! ack#search(mod, args)
@@ -79,7 +81,7 @@ function! ack#search(mod, args)
         let s:post = 'wincmd\ p|'.s:post
     endif
     let s:post = 'botright\ copen|'.s:post
-    silent execute ":AsyncRun! -strip -post=".s:post." ack -s -H --nopager --nocolor --nogroup --column ".pargs." ".s:MyPath." | awk '!x[$0]++'"
+    execute ":AsyncRun! -strip -post=".s:post." ack -s -H --nopager --nocolor --nogroup --column ".pargs." ".s:MyPath." | awk '!x[$0]++'"
     " 在qf打开之后再修改title
     if g:ack_openqf_when_search
         call setqflist([],'a',{'title':'Searching...'})
