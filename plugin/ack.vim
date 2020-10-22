@@ -30,7 +30,7 @@ endif
 
 " ack会根据.git里的内容快速搜索结果, 可以将包含.git的所有项目目录加入到搜索路径中
 if exists('g:ack_program_lists')
-    let s:MyPath = "'".expand('%:p')."'"
+    let s:MyPath = "'".expand('%:p')."' '".expand('%:p:h')."' "
     for s:program_path in g:ack_program_lists
         if fnamemodify('', ':p') =~ fnamemodify(s:program_path, ':p') . '.*'
             let s:gitLists = split(globpath(s:program_path, '**/.git'), '\n')
@@ -51,7 +51,7 @@ function! ack#search(mod, args)
         call setpos('.', [0, line_start, column_start, 0, column_start])
         let lines = getline(line_start, line_end)
         if len(lines) != 1
-            echoerr "ValueError. Not allowed multi lines."
+            echoerr "ValueError. Not allowe multi lines."
             return
         endif
         let pargs = lines[0][column_start - 1 : column_end - (&selection == 'inclusive' ? 1 : 2)]
@@ -60,7 +60,7 @@ function! ack#search(mod, args)
     endif
     echo ""
     if pargs == ""
-        echo "No regular expression found."
+        echoerr "No regular expression found."
         return
     endif
     let pargs = substitute(pargs, '\\', '\\\\', 'g')
