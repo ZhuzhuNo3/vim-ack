@@ -89,10 +89,10 @@ function! ack#search(mod, args)
         endif
     endif
     let s:post = "call\\ setqflist([],'a',{'title':\"" . showargs . "\"})"
-    if g:ack_focus_after_search == 0
-        let s:post = 'wincmd\ p|'.s:post
+    if g:ack_focus_after_search == 1
+        " let s:post = 'wincmd\ p|'.s:post
+        let s:post = 'if\ &filetype!="qf"|botright\ copen|endif|'.s:post
     endif
-    let s:post = 'botright\ copen|'.s:post
     " execute ":AsyncStop"
     execute ":AsyncRun! -strip -post=".s:post." unbuffer ack -s -H --nopager --nocolor --nogroup --column ".pargs." ".s:MyPath." | unbuffer -p awk '!x[$0]++'"
     " 在qf打开之后再修改title
