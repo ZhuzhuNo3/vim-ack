@@ -6,9 +6,12 @@
 
 配置快捷键后, 可对选中内容或当前指向单词进行搜索
 
-# 安装
+# 前置条件
 
-* 需要先安装插件 `Plug 'skywind3000/asyncrun.vim'`
+* 需要安装插件 `Plug 'skywind3000/asyncrun.vim'`
+* 需要在系统中安装 ack 以及 expect
+
+# 安装
 
 加入vimrc的插件列表中即可, 如
 

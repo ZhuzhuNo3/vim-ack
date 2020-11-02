@@ -29,22 +29,28 @@ if g:ack_autoclose_qf == 1
 endif
 
 " ack会根据.git里的内容快速搜索结果, 可以将包含.git的所有项目目录加入到搜索路径中
+let s:ProPath = ""
 if exists('g:ack_program_lists')
-    let s:MyPath = "'".expand('%:p')."' '".expand('%:p:h')."' "
     for s:program_path in g:ack_program_lists
         if fnamemodify('', ':p') =~ fnamemodify(s:program_path, ':p') . '.*'
             let s:gitLists = split(globpath(s:program_path, '**/.git'), '\n')
             for s:gitList in s:gitLists
-                let s:MyPath = s:MyPath . substitute(s:gitList, '^\(.*\)/\.git$', "'\\1'", 'g') . " "
+                let s:ProPath = s:ProPath . substitute(s:gitList, '^\(.*\)/\.git$', "'\\1'", 'g') . " "
             endfor
             break
         endif
     endfor
-else
-    let s:MyPath = "'".expand('%')."' '.'"
 endif
 
 function! ack#search(mod, args)
+    if globpath(&rtp, 'plugin/asyncrun.vim') == ""
+        echoerr "Please add plug 'skywind3000/asyncrun.vim'"
+        return
+    endif
+    if system('command -v unbuffer') == ""
+        echoerr "Please install Expect on your system"
+        return
+    endif
     if a:mod
         let [line_start, column_start] = getpos("'<")[1:2]
         let [line_end, column_end] = getpos("'>")[1:2]
@@ -59,6 +65,11 @@ function! ack#search(mod, args)
         let pargs = empty(a:args) ? expand("<cword>") : a:args
     endif
     echo ""
+    if s:ProPath == ""
+        let s:MyPath = "'".expand('%')."' '.'"
+    else
+        let s:MyPath = "'".expand('%:p')."' '".expand('%:p:h')."' ".s:ProPath
+    endif
     if pargs == ""
         echoerr "No regular expression found."
         return
@@ -66,10 +77,11 @@ function! ack#search(mod, args)
     let pargs = substitute(pargs, '\\', '\\\\', 'g')
     let pargs = substitute(pargs, '"', '\\"', 'g')
     let showargs = "AckSearch:\\ " . substitute(pargs, ' ', '\\ ', 'g')
-    let pargs = "\"" . pargs . "\""
+    let pargs = "-- \"" . pargs . "\""
     if g:ack_support_regx == 0
         let pargs = "-Q " . pargs
     endif
+    call setqflist([])
     if g:ack_openqf_when_search
         silent! execute ":botright copen"
         if g:ack_focus_when_search == 0
@@ -81,7 +93,8 @@ function! ack#search(mod, args)
         let s:post = 'wincmd\ p|'.s:post
     endif
     let s:post = 'botright\ copen|'.s:post
-    execute ":AsyncRun! -strip -post=".s:post." ack -s -H --nopager --nocolor --nogroup --column ".pargs." ".s:MyPath." | awk '!x[$0]++'"
+    " execute ":AsyncStop"
+    execute ":AsyncRun! -strip -post=".s:post." unbuffer ack -s -H --nopager --nocolor --nogroup --column ".pargs." ".s:MyPath." | unbuffer -p awk '!x[$0]++'"
     " 在qf打开之后再修改title
     if g:ack_openqf_when_search
         call setqflist([],'a',{'title':'Searching...'})
