@@ -91,7 +91,7 @@ function! ack#search(mod, args)
     let s:post = "call\\ setqflist([],'a',{'title':\"" . showargs . "\"})"
     if g:ack_focus_after_search == 1
         " let s:post = 'wincmd\ p|'.s:post
-        let s:post = 'if\ &filetype!="qf"|botright\ copen|endif|'.s:post
+        let s:post = 'if\ &filetype!="qf"&&filter(getwininfo(),"v:val.quickfix&&!v:val.loclist")!=[]|botright\ copen|endif|'.s:post
     endif
     " execute ":AsyncStop"
     execute ":AsyncRun! -strip -post=".s:post." unbuffer ack -s -H --nopager --nocolor --nogroup --column ".pargs." ".s:MyPath." | unbuffer -p awk '!x[$0]++'"
