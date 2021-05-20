@@ -76,6 +76,8 @@ function! ack#search(mod, args)
     endif
     let pargs = substitute(pargs, '\\', '\\\\', 'g')
     let pargs = substitute(pargs, '"', '\\"', 'g')
+    let pargs = substitute(pargs, '%', '\\%', 'g')
+    let pargs = substitute(pargs, '#', '\\#', 'g')
     let showargs = "AckSearch:\\ " . substitute(pargs, ' ', '\\ ', 'g')
     let pargs = "-- \"" . pargs . "\""
     if g:ack_support_regx == 0
