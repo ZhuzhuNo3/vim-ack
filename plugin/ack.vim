@@ -66,9 +66,9 @@ function! ack#search(mod, args)
     endif
     echo ""
     if s:ProPath == ""
-        let s:MyPath = "'".expand('%')."' '.'"
+        let s:MyPath = "'".expand('%:p:h')."' '".getcwd()."'"
     else
-        let s:MyPath = "'".expand('%:p')."' '".expand('%:p:h')."' ".s:ProPath
+        let s:MyPath = "'".expand('%:p:h')."' '".getcwd()."' ".s:ProPath
     endif
     if pargs == ""
         echoerr "No regular expression found."
