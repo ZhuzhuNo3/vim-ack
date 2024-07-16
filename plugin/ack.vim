@@ -3,26 +3,18 @@
 " 自定义quickfix中高亮行的高亮方式 -> 保留文本颜色, 仅修改背景色
 " hi QuickFixLine ctermfg=NONE ctermbg=12 guifg=NONE guibg=#de935f
 
+function! SetDefaultVar(var_name, default_val)
+    if !exists(a:var_name)
+        let {a:var_name} = a:default_val
+    endif
+endfunction
+
 " 选择后自动关闭qf窗口
-if !exists('g:ack_autoclose_qf')
-    let g:ack_autoclose_qf = 1
-endif
-
-if !exists('g:ack_support_regx')
-    let g:ack_support_regx = 0
-endif
-
-if !exists('g:ack_openqf_when_search')
-    let g:ack_openqf_when_search = 1
-endif
-
-if !exists('g:ack_focus_when_search')
-    let g:ack_focus_when_search = 0
-endif
-
-if !exists('g:ack_focus_after_search')
-    let g:ack_focus_after_search = 0
-endif
+call SetDefaultVar('g:ack_autoclose_qf', 1)
+call SetDefaultVar('g:ack_support_regx', 0)
+call SetDefaultVar('g:ack_openqf_when_search', 1)
+call SetDefaultVar('g:ack_focus_when_search', 0)
+call SetDefaultVar('g:ack_focus_after_search', 0)
 
 if g:ack_autoclose_qf == 1
     autocmd FileType qf nnoremap <silent> <buffer> <CR> <CR>:cclose<CR>
@@ -74,10 +66,7 @@ function! ack#search(mod, args)
         echoerr "No regular expression found."
         return
     endif
-    let pargs = substitute(pargs, '\\', '\\\\', 'g')
-    let pargs = substitute(pargs, '"', '\\"', 'g')
-    let pargs = substitute(pargs, '%', '\\%', 'g')
-    let pargs = substitute(pargs, '#', '\\#', 'g')
+    let pargs = substitute(pargs, '[\\"%#]', '\\&', 'g')
     let showargs = "AckSearch:\\ " . substitute(pargs, ' ', '\\ ', 'g')
     let pargs = "-- \"" . pargs . "\""
     if g:ack_support_regx == 0
